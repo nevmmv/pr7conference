@@ -23,30 +23,35 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SendConfirmationEmailServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(
-            SendConfirmationEmailServlet.class.getName());
+	private static final long serialVersionUID = 508847412416659770L;
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String conferenceInfo = request.getParameter("conferenceInfo");
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-        String body = "Hi, you have created a following conference.\n" + conferenceInfo;
-        try {
-            Message message = new MimeMessage(session);
-            InternetAddress from = new InternetAddress(
-                    String.format("noreply@%s.appspotmail.com",
-                            SystemProperty.applicationId.get()), "Conference Central");
-            message.setFrom(from);
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email, ""));
-            message.setSubject("You created a new Conference!");
-            message.setText(body);
-            Transport.send(message);
-        } catch (MessagingException e) {
-            LOG.log(Level.WARNING, String.format("Failed to send an mail to %s", email), e);
-            throw new RuntimeException(e);
-        }
-    }
+	private static final Logger LOG = Logger
+			.getLogger(SendConfirmationEmailServlet.class.getName());
+
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String email = request.getParameter("email");
+		String conferenceInfo = request.getParameter("conferenceInfo");
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		String body = "Hi, you have created a following conference.\n"
+				+ conferenceInfo;
+		try {
+			Message message = new MimeMessage(session);
+			InternetAddress from = new InternetAddress(
+					String.format("noreply@%s.appspotmail.com", SystemProperty.applicationId.get()),
+					"Conference Central");
+			message.setFrom(from);
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					email, ""));
+			message.setSubject("You created a new Conference!");
+			message.setText(body);
+			Transport.send(message);
+		} catch (MessagingException e) {
+			LOG.log(Level.WARNING,
+					String.format("Failed to send an mail to %s", email), e);
+			throw new RuntimeException(e);
+		}
+	}
 }

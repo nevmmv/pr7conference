@@ -1,18 +1,14 @@
 package com.google.devrel.training.conference.domain;
 
-import static org.junit.Assert.*;
-
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
-import com.googlecode.objectify.Key;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
 
 /**
  * Tests for Profile POJO.
@@ -56,7 +52,7 @@ public class ProfileTest {
     public void testUpdate() throws Exception {
         String newDisplayName = "New Display Name";
         TeeShirtSize newTeeShirtSize = TeeShirtSize.M;
-        profile.update(newDisplayName, newTeeShirtSize);
+        profile.updateProfile(newDisplayName, newTeeShirtSize);
         assertEquals(USER_ID, profile.getUserId());
         assertEquals(newDisplayName, profile.getDisplayName());
         assertEquals(EMAIL, profile.getMainEmail());

@@ -1,10 +1,13 @@
 package com.google.devrel.training.conference.domain;
 
-import com.google.appengine.api.memcache.MemcacheService; 
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import java.io.Serializable;
 
-
-public class Announcement {
+public class Announcement implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4165662681228239102L;
+	
 	private String message;
 
 	public Announcement() {
@@ -17,4 +20,10 @@ public class Announcement {
 	public String getMessage() {
 		return message;
 	}
+
+	@Override
+	public String toString() {
+		return "Announcement [message=" + message + "]";
+	}
+	
 }

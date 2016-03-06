@@ -10,60 +10,35 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 
-// TODONE indicate that this class is an Entity
-@Entity
+// TODO indicate that this class is an Entity
 @Cache
+@Entity
 public class Profile {
 	String displayName;
 	String mainEmail;
 	TeeShirtSize teeShirtSize;
-
-	// TODONE indicate that the userId is to be used in the Entity's key
-	@Id
-	String userId;
-
-	// List of conferences the user has registered to attend
-	private List<String> conferenceKeysToAttend = new ArrayList<>(0);
-
 	
-	/**
-	 * Public constructor for Profile.
-	 * 
-	 * @param userId
-	 *            The user id, obtained from the email
-	 * @param displayName
-	 *            Any string user wants us to display him/her on this system.
-	 * @param mainEmail
-	 *            User's main e-mail address.
-	 * @param teeShirtSize
-	 *            The User's tee shirt size
-	 * 
-	 */
-	public Profile(String userId, String displayName, String mainEmail,
-			TeeShirtSize teeShirtSize) {
-		this.userId = userId;
-		this.displayName = displayName;
-		this.mainEmail = mainEmail;
-		this.teeShirtSize = teeShirtSize;
-	}
+	private List <String> conferenceKeysToAttend = new ArrayList<> (0);
 
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public String getMainEmail() {
-		return mainEmail;
-	}
-
-	public TeeShirtSize getTeeShirtSize() {
-		return teeShirtSize;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public List<String> getConferenceKeysToAttend() {
+	// TODO indicate that the userId is to be used in the Entity's key
+	@Id String userId;
+    
+    /**
+     * Public constructor for Profile.
+     * @param userId The user id, obtained from the email
+     * @param displayName Any string user wants us to display him/her on this system.
+     * @param mainEmail User's main e-mail address.
+     * @param teeShirtSize The User's tee shirt size
+     * 
+     */
+    public Profile (String userId, String displayName, String mainEmail, TeeShirtSize teeShirtSize) {
+    	this.userId = userId;
+    	this.displayName = displayName;
+    	this.mainEmail = mainEmail;
+    	this.teeShirtSize = teeShirtSize;
+    }
+    
+    public List<String> getConferenceKeysToAttend() {
         return ImmutableList.copyOf(conferenceKeysToAttend);
     }
     
@@ -83,19 +58,37 @@ public class Profile {
             throw new IllegalArgumentException("Invalid conferenceKey: " + conferenceKey);
         }
     }
-	
-	/**
-	 * Just making the default constructor private.
-	 */
-	@SuppressWarnings("unused")
-	private Profile() {
+    
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void update(String displayName2, TeeShirtSize teeShirtSize2) {
-		if (displayName2 != null)
-			displayName = displayName2;
-		if (teeShirtSize2 != null)
-			teeShirtSize = teeShirtSize2;
+	public String getMainEmail() {
+		return mainEmail;
 	}
+
+	public TeeShirtSize getTeeShirtSize() {
+		return teeShirtSize;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+	
+	public void updateProfile(final String displayName, final TeeShirtSize size) {
+		
+		if(displayName != null) {
+			this.displayName = displayName;	
+		}
+		
+		if(size != null) {
+			this.teeShirtSize = size;
+		}
+	}
+
+	/**
+     * Just making the default constructor private.
+     */
+    private Profile() {}
 
 }

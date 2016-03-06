@@ -1,33 +1,28 @@
 package com.google.devrel.training.conference.spi;
 
 import static com.google.devrel.training.conference.service.OfyService.ofy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.users.User;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+// import com.google.devrel.training.conference.domain.Conference;
+import com.google.devrel.training.conference.domain.Profile;
+// import com.google.devrel.training.conference.form.ConferenceForm;
+import com.google.devrel.training.conference.form.ProfileForm;
+import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
+import com.googlecode.objectify.Key;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.users.User;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.devrel.training.conference.domain.Conference;
-// import com.google.devrel.training.conference.domain.Conference;
-import com.google.devrel.training.conference.domain.Profile;
-import com.google.devrel.training.conference.form.ConferenceForm;
-// import com.google.devrel.training.conference.form.ConferenceForm;
-import com.google.devrel.training.conference.form.ProfileForm;
-import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
-import com.googlecode.objectify.Key;
 
 /**
  * Tests for ConferenceApi API methods.
@@ -90,7 +85,7 @@ public class ConferenceApiTest {
     public void testSaveProfile() throws Exception {
         // Save the profile for the first time.
         Profile profile = conferenceApi.saveProfile(
-                user, new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE));
+                new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE), user);
         // Check the return value first.
         assertEquals(USER_ID, profile.getUserId());
         assertEquals(EMAIL, profile.getMainEmail());
@@ -107,7 +102,7 @@ public class ConferenceApiTest {
     @Test
     public void testSaveProfileWithNull() throws Exception {
         // Save the profile for the first time with null values.
-        Profile profile = conferenceApi.saveProfile(user, new ProfileForm(null, null));
+        Profile profile = conferenceApi.saveProfile(new ProfileForm(null, null), user);
         String displayName = EMAIL.substring(0, EMAIL.indexOf("@"));
         // Check the return value first.
         assertEquals(USER_ID, profile.getUserId());
@@ -124,7 +119,7 @@ public class ConferenceApiTest {
 
     @Test
     public void testGetProfile() throws Exception {
-        conferenceApi.saveProfile(user, new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE));
+        conferenceApi.saveProfile(new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE), user);
         // Fetch the Profile via the API.
         Profile profile = conferenceApi.getProfile(user);
         assertEquals(USER_ID, profile.getUserId());
@@ -136,7 +131,7 @@ public class ConferenceApiTest {
     @Test
     public void testUpdateProfile() throws Exception {
         // Save for the first time.
-        conferenceApi.saveProfile(user, new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE));
+        conferenceApi.saveProfile(new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE), user);
         Profile profile = ofy().load().key(Key.create(Profile.class, user.getUserId())).now();
         assertEquals(USER_ID, profile.getUserId());
         assertEquals(EMAIL, profile.getMainEmail());
@@ -145,7 +140,7 @@ public class ConferenceApiTest {
         // Then try to update it.
         String newDisplayName = "New Name";
         TeeShirtSize newTeeShirtSize = TeeShirtSize.L;
-        conferenceApi.saveProfile(user, new ProfileForm(newDisplayName, newTeeShirtSize));
+        conferenceApi.saveProfile(new ProfileForm(newDisplayName, newTeeShirtSize), user);
         profile = ofy().load().key(Key.create(Profile.class, user.getUserId())).now();
         assertEquals(USER_ID, profile.getUserId());
         assertEquals(EMAIL, profile.getMainEmail());
@@ -155,9 +150,9 @@ public class ConferenceApiTest {
 
     @Test
     public void testUpdateProfileWithNulls() throws Exception {
-        conferenceApi.saveProfile(user, new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE));
+        conferenceApi.saveProfile(new ProfileForm(DISPLAY_NAME, TEE_SHIRT_SIZE), user);
         // Update the Profile with null values.
-        Profile profile = conferenceApi.saveProfile(user, new ProfileForm(null, null));
+        Profile profile = conferenceApi.saveProfile(new ProfileForm(null, null), user);
         // Expected behavior is that the existing properties do not get overwritten
 
         // Check the return value first.
@@ -174,7 +169,7 @@ public class ConferenceApiTest {
     }
 
 
-    
+    /*
     @Test
     public void testCreateConference() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -191,7 +186,7 @@ public class ConferenceApiTest {
         assertEquals(NAME, conference.getName());
         assertEquals(DESCRIPTION, conference.getDescription());
         assertEquals(topics, conference.getTopics());
-        assertEquals(USER_ID, conference.getOrganizerUserId());
+        assertEquals(USER_ID, conference.getOrganizerGplusId());
         assertEquals(CITY, conference.getCity());
         assertEquals(startDate, conference.getStartDate());
         assertEquals(endDate, conference.getEndDate());
@@ -206,9 +201,9 @@ public class ConferenceApiTest {
         String displayName = EMAIL.substring(0, EMAIL.indexOf("@"));
         assertEquals(displayName, profile.getDisplayName());
     }
-    
+    */
 
-    
+    /*
     @Test
     public void testGetConferencesCreated() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -227,9 +222,9 @@ public class ConferenceApiTest {
         assertTrue("The result should contain a conference",
                 conferencesCreated.contains(conference));
     }
-    
+    */
 
-    
+    /*
     @Test
     public void testGetConference() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -247,7 +242,7 @@ public class ConferenceApiTest {
         assertEquals(NAME, conference.getName());
         assertEquals(DESCRIPTION, conference.getDescription());
         assertEquals(topics, conference.getTopics());
-        assertEquals(USER_ID, conference.getOrganizerUserId());
+        assertEquals(USER_ID, conference.getOrganizerGplusId());
         assertEquals(CITY, conference.getCity());
         assertEquals(startDate, conference.getStartDate());
         assertEquals(endDate, conference.getEndDate());
@@ -255,9 +250,9 @@ public class ConferenceApiTest {
         assertEquals(CAP, conference.getSeatsAvailable());
         assertEquals(MONTH, conference.getMonth());
     }
-    
+    */
 
-    
+    /*
     @Test
     public void testRegistrations() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -292,5 +287,5 @@ public class ConferenceApiTest {
         assertFalse("Profile shouldn't have the conferenceId in conferenceIdsToAttend.",
                 profile.getConferenceKeysToAttend().contains(conference.getWebsafeKey()));
     }
-    
+    */
 }
